@@ -21,6 +21,12 @@ competition Competition;
 /*  already have configured your robot manually with the sidebar configurer. */
 /*---------------------------------------------------------------------------*/
 
+/*
+  PORTS:
+  RF 3 , RM 10 reverse, RB 5,
+  LF 2, LM 6 reverse, LB 4
+  CATA 1, Inertial 7, Intake 18.
+*/
 Drive chassis(
 
 //Specify your drive setup below. There are seven options:
@@ -38,7 +44,7 @@ motor_group(),
 motor_group(),
 
 //Specify the PORT NUMBER of your inertial sensor, in PORT format (i.e. "PORT1", not simply "1"):
-PORT1,
+PORT7,
 
 //Input your wheel diameter. (4" omnis are actually closer to 4.125"):
 3.25,
@@ -64,7 +70,7 @@ PORT1,
 
 //FOR HOLONOMIC DRIVES ONLY: Input your drive motors by position. This is only necessary for holonomic drives, otherwise this section can be left alone.
 //LF:      //RF:    
-PORT1,     -PORT2,
+PORT12,     -PORT2,
 
 //LB:      //RB: 
 PORT3,     -PORT4,
@@ -72,7 +78,7 @@ PORT3,     -PORT4,
 //If you are using position tracking, this is the Forward Tracker port (the tracker which runs parallel to the direction of the chassis).
 //If this is a rotation sensor, enter it in "PORT1" format, inputting the port below.
 //If this is an encoder, enter the port as an integer. Triport A will be a "1", Triport B will be a "2", etc.
-3,
+20,
 
 //Input the Forward Tracker diameter (reverse it to make the direction switch):
 2.75,
