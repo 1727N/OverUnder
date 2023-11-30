@@ -2,6 +2,18 @@ using namespace vex;
 
 extern brain Brain;
 
+extern controller Controller1;
+
+extern motor FL;
+extern motor FR;
+extern motor ML;
+extern motor MR;
+extern motor BL;
+extern motor BR;
+
+extern motor Intake;
+extern motor Catapult;
+extern inertial Inertial;
 // VEXcode devices
 
 /**

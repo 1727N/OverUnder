@@ -21,12 +21,7 @@ competition Competition;
 /*  already have configured your robot manually with the sidebar configurer. */
 /*---------------------------------------------------------------------------*/
 
-/*
-  PORTS:
-  RF 3 , RM 10 reverse, RB 5,
-  LF 2, LM 6 reverse, LB 4
-  CATA 1, Inertial 7, Intake 18.
-*/
+
 Drive chassis(
 
 //Specify your drive setup below. There are seven options:
@@ -38,10 +33,10 @@ ZERO_TRACKER_NO_ODOM,
 //You will input whatever motor names you chose when you configured your robot using the sidebar configurer, they don't have to be "Motor1" and "Motor2".
 
 //Left Motors:
-motor_group(),
+motor_group(FL, ML, BL),
 
 //Right Motors:
-motor_group(),
+motor_group(FR, MR, BR),
 
 //Specify the PORT NUMBER of your inertial sensor, in PORT format (i.e. "PORT1", not simply "1"):
 PORT7,
@@ -106,7 +101,7 @@ void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
   default_constants();
-
+  /*
   while(auto_started == false){            //Changing the names below will only change their names on the
     Brain.Screen.clearScreen();            //brain screen for auton selection.
     switch(current_auton_selection){       //Tap the brain screen to cycle through autons.
@@ -143,6 +138,7 @@ void pre_auton(void) {
     }
     task::sleep(10);
   }
+  */
 }
 
 void autonomous(void) {
@@ -199,8 +195,30 @@ void usercontrol(void) {
 
     //Replace this line with chassis.control_tank(); for tank drive 
     //or chassis.control_holonomic(); for holo drive.
-    chassis.control_arcade();
+    vex_printf("Hello World");
 
+    chassis.control_arcade();
+    // if(Controller1.ButtonL1.pressing())
+    // {
+    //   Intake.spin(forward);
+    // }
+    // else if(Controller1.ButtonL2.pressing())
+    // {
+    //   Intake.spin(reverse);
+    // }
+    // else{
+    //   Intake.stop();
+    // }
+
+
+    // if(Controller1.ButtonA.pressing())
+    // {
+    //     Catapult.spin(forward);
+    // }
+    // else
+    // {
+    //   Catapult.stop();
+    //}
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
   }
@@ -211,12 +229,15 @@ void usercontrol(void) {
 //
 int main() {
   // Set up callbacks for autonomous and driver control periods.
-  Competition.autonomous(autonomous);
+  //Competition.autonomous(autonomous);
+  pre_auton();
   Competition.drivercontrol(usercontrol);
 
   // Run the pre-autonomous function.
-  pre_auton();
-
+  //vexcodeInit();
+  //default_constants();
+  
+  //usercontrol();
   // Prevent main from exiting with an infinite loop.
   while (true) {
     wait(100, msec);
