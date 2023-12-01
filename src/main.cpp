@@ -171,6 +171,39 @@ void autonomous(void) {
  }
 }
 
+void catapultControl(){
+  if(Controller1.ButtonA.pressing()){
+      Catapult.spin(forward);
+  }
+  else{     
+    Catapult.stop();
+  }
+}
+
+void intakeControl(){
+  Intake.setBrake(coast);
+  Intake.setVelocity(90, pct);
+
+  if (Controller1.ButtonL1.pressing()){
+    Intake.spin(fwd);
+  }
+  else if (Controller1.ButtonL2.pressing()){
+    Intake.spin(reverse);
+  }
+  else {
+    Intake.stop(); 
+  }
+}
+
+void wingControl(){
+  if (Controller1.ButtonR1.PRESSED){
+    Wings.set(true);
+  }
+  else if (Controller1.ButtonR2.PRESSED){
+    Wings.set(false);
+  }
+}
+
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
 /*                              User Control Task                            */
@@ -197,28 +230,10 @@ void usercontrol(void) {
     //or chassis.control_holonomic(); for holo drive.
     vex_printf("Hello World");
 
-    chassis.control_arcade();
-    // if(Controller1.ButtonL1.pressing())
-    // {
-    //   Intake.spin(forward);
-    // }
-    // else if(Controller1.ButtonL2.pressing())
-    // {
-    //   Intake.spin(reverse);
-    // }
-    // else{
-    //   Intake.stop();
-    // }
+    chassis.control_tank();
+    intakeControl();
+    wingControl();
 
-
-    // if(Controller1.ButtonA.pressing())
-    // {
-    //     Catapult.spin(forward);
-    // }
-    // else
-    // {
-    //   Catapult.stop();
-    //}
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
   }
@@ -229,15 +244,12 @@ void usercontrol(void) {
 //
 int main() {
   // Set up callbacks for autonomous and driver control periods.
-  //Competition.autonomous(autonomous);
-  pre_auton();
+  Competition.autonomous(autonomous);
   Competition.drivercontrol(usercontrol);
 
   // Run the pre-autonomous function.
-  //vexcodeInit();
-  //default_constants();
-  
-  //usercontrol();
+  pre_auton();
+
   // Prevent main from exiting with an infinite loop.
   while (true) {
     wait(100, msec);

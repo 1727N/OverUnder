@@ -14,6 +14,8 @@ extern motor BR;
 extern motor Intake;
 extern motor Catapult;
 extern inertial Inertial;
+
+extern digital_out Wings;
 // VEXcode devices
 
 /**

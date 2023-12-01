@@ -358,6 +358,9 @@ void Drive::holonomic_drive_to_point(float X_position, float Y_position, float a
 }
 
 void Drive::control_arcade(){
+  DriveL.setStopping(coast);
+  DriveR.setStopping(coast);
+
   float throttle = deadband(controller(primary).Axis3.value(), 5);
   float turn = deadband(controller(primary).Axis1.value(), 5);
   DriveL.spin(fwd, to_volt(throttle+turn), volt);
@@ -375,6 +378,9 @@ void Drive::control_holonomic(){
 }
 
 void Drive::control_tank(){
+  DriveL.setStopping(coast);
+  DriveR.setStopping(coast);
+
   float leftthrottle = deadband(controller(primary).Axis3.value(), 5);
   float rightthrottle = deadband(controller(primary).Axis2.value(), 5);
   DriveL.spin(fwd, to_volt(leftthrottle), volt);
