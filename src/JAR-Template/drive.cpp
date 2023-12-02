@@ -1,4 +1,5 @@
 #include "vex.h"
+#include <iostream>
 
 Drive::Drive(enum::drive_setup drive_setup, motor_group DriveL, motor_group DriveR, int gyro_port, float wheel_diameter, float wheel_ratio, float gyro_scale, int DriveLF_port, int DriveRF_port, int DriveLB_port, int DriveRB_port, int ForwardTracker_port, float ForwardTracker_diameter, float ForwardTracker_center_distance, int SidewaysTracker_port, float SidewaysTracker_diameter, float SidewaysTracker_center_distance) :
   wheel_diameter(wheel_diameter),
@@ -120,7 +121,14 @@ void Drive::turn_to_angle(float angle, float turn_max_voltage, float turn_settle
     float output = turnPID.compute(error);
     output = clamp(output, -turn_max_voltage, turn_max_voltage);
     drive_with_voltage(output, -output);
+    // Brain.Screen.newLine();
+    // Brain.Screen.print(Brain.timer(msec));
+    // Brain.Screen.newLine();
+    // Brain.Screen.print(error);
+    std::cout<<"Error: "<<error<<std::endl;
+    std::cout<<"Time: "<<Brain.timer(msec)<<std::endl;
     task::sleep(10);
+
   }
   DriveL.stop(hold);
   DriveR.stop(hold);

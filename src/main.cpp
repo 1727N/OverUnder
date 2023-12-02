@@ -1,4 +1,6 @@
 #include "vex.h"
+#include <iostream>
+#include <string>
 
 using namespace vex;
 competition Competition;
@@ -94,51 +96,50 @@ PORT3,     -PORT4,
 
 );
 
-int current_auton_selection = 0;
+int current_auton_selection = 2;
 bool auto_started = false;
 
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
-  default_constants();
-  /*
-  while(auto_started == false){            //Changing the names below will only change their names on the
-    Brain.Screen.clearScreen();            //brain screen for auton selection.
-    switch(current_auton_selection){       //Tap the brain screen to cycle through autons.
-      case 0:
-        Brain.Screen.printAt(50, 50, "Drive Test");
-        break;
-      case 1:
-        Brain.Screen.printAt(50, 50, "Drive Test");
-        break;
-      case 2:
-        Brain.Screen.printAt(50, 50, "Turn Test");
-        break;
-      case 3:
-        Brain.Screen.printAt(50, 50, "Swing Test");
-        break;
-      case 4:
-        Brain.Screen.printAt(50, 50, "Full Test");
-        break;
-      case 5:
-        Brain.Screen.printAt(50, 50, "Odom Test");
-        break;
-      case 6:
-        Brain.Screen.printAt(50, 50, "Tank Odom Test");
-        break;
-      case 7:
-        Brain.Screen.printAt(50, 50, "Holonomic Odom Test");
-        break;
-    }
-    if(Brain.Screen.pressing()){
-      while(Brain.Screen.pressing()) {}
-      current_auton_selection ++;
-    } else if (current_auton_selection == 8){
-      current_auton_selection = 0;
-    }
+  andre_constants();
+  // while(auto_started == false){            //Changing the names below will only change their names on the
+  //   Brain.Screen.clearScreen();            //brain screen for auton selection.
+  //   switch(current_auton_selection){       //Tap the brain screen to cycle through autons.
+  //     case 0:
+  //       Brain.Screen.printAt(50, 50, "Drive Test");
+  //       break;
+  //     case 1:
+  //       Brain.Screen.printAt(50, 50, "Drive Test");
+  //       break;
+  //     case 2:
+  //       Brain.Screen.printAt(50, 50, "Turn Test");
+  //       break;
+  //     case 3:
+  //       Brain.Screen.printAt(50, 50, "Swing Test");
+  //       break;
+  //     case 4:
+  //       Brain.Screen.printAt(50, 50, "Full Test");
+  //       break;
+  //     case 5:
+  //       Brain.Screen.printAt(50, 50, "Odom Test");
+  //       break;
+  //     case 6:
+  //       Brain.Screen.printAt(50, 50, "Tank Odom Test");
+  //       break;
+  //     case 7:
+  //       Brain.Screen.printAt(50, 50, "Holonomic Odom Test");
+  //       break;
+  //   }
+  //   if(Brain.Screen.pressing()){
+  //     while(Brain.Screen.pressing()) {}
+  //     current_auton_selection ++;
+  //   } else if (current_auton_selection == 8){
+  //     current_auton_selection = 0;
+  //   }
     task::sleep(10);
-  }
-  */
+  // }
+  
 }
 
 void autonomous(void) {
@@ -215,8 +216,43 @@ void wingControl(){
 /*---------------------------------------------------------------------------*/
 
 void usercontrol(void) {
+  wait(1,sec);
   // User control code here, inside the loop
   while (1) {
+    
+    if (Controller1.ButtonX.PRESSED){
+      chassis.turn_kp += .01;
+    }
+    if (Controller1.ButtonA.PRESSED){
+      chassis.turn_kp -= .01;
+    }
+    if (Controller1.ButtonY.PRESSED){
+      chassis.turn_kd += .01;
+    }
+    if (Controller1.ButtonB.PRESSED){
+      chassis.turn_kd -= .01;
+    }  
+    
+
+    std::cout << chassis.turn_kp << std::endl << std::endl;
+    std::cout << chassis.turn_ki << std::endl << std::endl;
+    std::cout << chassis.turn_kd << std::endl << std::endl;
+    if(Controller1.ButtonL1.PRESSED){
+      Brain.resetTimer();
+      chassis.turn_to_angle(90);
+    }
+    if(Controller1.ButtonL2.PRESSED) {
+      Brain.resetTimer();
+      chassis.turn_to_angle(0);
+    }
+    if(Controller1.ButtonR2.PRESSED) {
+      Brain.resetTimer();
+      chassis.turn_to_angle(180);
+    }
+    if(Controller1.ButtonR1.PRESSED) {
+      Brain.resetTimer();
+      chassis.turn_to_angle(30);
+    }
     // This is the main execution loop for the user control program.
     // Each time through the loop your program should update motor + servo
     // values based on feedback from the joysticks.
@@ -228,12 +264,18 @@ void usercontrol(void) {
 
     //Replace this line with chassis.control_tank(); for tank drive 
     //or chassis.control_holonomic(); for holo drive.
-    vex_printf("Hello World");
+    // vex_printf("Hello World");
 
-    chassis.control_tank();
-    intakeControl();
-    wingControl();
-
+    // chassis.control_tank();
+    // intakeControl();
+    // wingControl();
+    Brain.Screen.clearScreen();
+    // Brain.Screen.newLine();
+    Brain.Screen.print(chassis.turn_kp);
+    Brain.Screen.newLine();
+    Brain.Screen.print(chassis.turn_ki);
+    Brain.Screen.newLine();
+    Brain.Screen.print(chassis.turn_kd);
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
   }
