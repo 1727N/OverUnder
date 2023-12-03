@@ -86,7 +86,7 @@ PORT3,     -PORT4,
 -2,
 
 //Input the Sideways Tracker Port, following the same steps as the Forward Tracker Port:
-1,
+21,
 
 //Sideways tracker diameter (reverse to make the direction switch):
 -2.75,
@@ -142,37 +142,138 @@ void pre_auton(void) {
   
 }
 
-void autonomous(void) {
-  auto_started = true;
-  switch(current_auton_selection){  
-    case 0:
-      drive_test(); //This is the default auton, if you don't select from the brain.
-      break;        //Change these to be your own auton functions in order to use the auton selector.
-    case 1:         //Tap the screen to cycle through autons.
-      drive_test();
-      break;
-    case 2:
-      turn_test();
-      break;
-    case 3:
-      swing_test();
-      break;
-    case 4:
-      full_test();
-      break;
-    case 5:
-      odom_test();
-      break;
-    case 6:
-      tank_odom_test();
-      break;
-    case 7:
-      holonomic_odom_test();
-      break;
- }
+void outtake()
+{
+  Intake.spinFor(reverse, 500, msec);
 }
 
-void catapultControl(){
+void far_side()
+{
+  Wings.set(true);
+  chassis.drive_distance(24);
+  chassis.turn_to_angle(-90);
+  chassis.drive_distance(30);
+  outtake();
+  Wings.set(false);
+  chassis.drive_distance(-15);
+  chassis.turn_to_angle(-150);
+  Intake.spin(forward);
+  chassis.drive_distance(50);
+  Intake.stop();
+  Wings.set(true);
+  chassis.drive_distance(5);
+  chassis.turn_to_angle(-90);
+  chassis.drive_distance(5);
+  chassis.turn_to_angle(0);
+  chassis.drive_distance(48);
+  outtake();
+}
+
+void near_side()
+{
+  chassis.drive_distance(135);
+  chassis.turn_to_angle(45);
+  outtake();
+  chassis.turn_to_angle(180);
+  chassis.drive_distance(135);
+  chassis.turn_to_angle(138);
+  Intake.spin(forward);
+  chassis.drive_distance(30);
+}
+
+void autonomous(void) {
+  // five_ball();
+  
+}
+
+void drive_tuning(float tuning_factor)
+{
+  if (Controller1.ButtonX.PRESSED){
+      chassis.drive_kp += tuning_factor;
+      std::cout << "KP "<< chassis.drive_kp << std::endl << std::endl;
+  }
+  if (Controller1.ButtonA.PRESSED){
+    chassis.drive_kp -= tuning_factor;
+    std::cout << "KP "<<chassis.drive_kp << std::endl << std::endl;
+  }
+  if (Controller1.ButtonY.PRESSED){
+    chassis.drive_kd += tuning_factor;
+    std::cout << "KD "<<chassis.drive_kd << std::endl << std::endl;
+  }
+  if (Controller1.ButtonB.PRESSED){
+    chassis.drive_kd -= tuning_factor;
+    std::cout << "KD "<<chassis.drive_kd << std::endl << std::endl;
+  } 
+  if(Controller1.ButtonDown.PRESSED)
+  {
+    std::cout << "KP " << chassis.drive_kp << std::endl << std::endl;
+    std::cout << "KI " << chassis.drive_ki << std::endl << std::endl;
+    std::cout << "KD " << chassis.drive_kd << std::endl << std::endl;
+  }
+  if(Controller1.ButtonL1.PRESSED){
+    Brain.resetTimer();
+    chassis.drive_distance(24,0);
+  }
+  if(Controller1.ButtonL2.PRESSED) {
+    Brain.resetTimer();
+    chassis.drive_distance(-24,0);
+  }
+  if(Controller1.ButtonR1.PRESSED) {
+    Brain.resetTimer();
+    chassis.drive_distance(12,0);
+  }
+  if(Controller1.ButtonR2.PRESSED) {
+    Brain.resetTimer();
+    chassis.drive_distance(-12,0);
+  }
+}
+
+void turn_tuning(float tuning_factor)
+{
+  if (Controller1.ButtonX.PRESSED){
+    chassis.turn_kp += tuning_factor;
+    std::cout << chassis.turn_kp << std::endl << std::endl;
+  }
+  if (Controller1.ButtonA.PRESSED){
+    chassis.turn_kp -= tuning_factor;
+    std::cout << chassis.turn_kp << std::endl << std::endl;
+  }
+  if (Controller1.ButtonY.PRESSED){
+    chassis.turn_kd += tuning_factor;
+    std::cout << chassis.turn_kd << std::endl << std::endl;
+  }
+  if (Controller1.ButtonB.PRESSED){
+    chassis.turn_kd -= tuning_factor;
+    std::cout << chassis.turn_kd << std::endl << std::endl;
+  }  
+  
+  if(Controller1.ButtonDown.PRESSED)
+  {
+    std::cout << chassis.turn_kp << std::endl << std::endl;
+    std::cout << chassis.turn_ki << std::endl << std::endl;
+    std::cout << chassis.turn_kd << std::endl << std::endl;
+  }
+  
+  if(Controller1.ButtonL1.PRESSED){
+    Brain.resetTimer();
+    chassis.turn_to_angle(90);
+  }
+  if(Controller1.ButtonL2.PRESSED) {
+    Brain.resetTimer();
+    chassis.turn_to_angle(0);
+  }
+  if(Controller1.ButtonR2.PRESSED) {
+    Brain.resetTimer();
+    chassis.turn_to_angle(180);
+  }
+  if(Controller1.ButtonR1.PRESSED) {
+    Brain.resetTimer();
+    chassis.turn_to_angle(30);
+  }
+}
+
+void catapultControl()
+{
   if(Controller1.ButtonA.pressing()){
       Catapult.spin(forward);
   }
@@ -215,67 +316,19 @@ void wingControl(){
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
+void i_drive()
+{
+  chassis.control_tank();
+  intakeControl();
+  wingControl();
+}
+
 void usercontrol(void) {
-  wait(1,sec);
+  wait(5,sec);
   // User control code here, inside the loop
-  while (1) {
-    
-    if (Controller1.ButtonX.PRESSED){
-      chassis.turn_kp += .01;
-    }
-    if (Controller1.ButtonA.PRESSED){
-      chassis.turn_kp -= .01;
-    }
-    if (Controller1.ButtonY.PRESSED){
-      chassis.turn_kd += .01;
-    }
-    if (Controller1.ButtonB.PRESSED){
-      chassis.turn_kd -= .01;
-    }  
-    
-
-    std::cout << chassis.turn_kp << std::endl << std::endl;
-    std::cout << chassis.turn_ki << std::endl << std::endl;
-    std::cout << chassis.turn_kd << std::endl << std::endl;
-    if(Controller1.ButtonL1.PRESSED){
-      Brain.resetTimer();
-      chassis.turn_to_angle(90);
-    }
-    if(Controller1.ButtonL2.PRESSED) {
-      Brain.resetTimer();
-      chassis.turn_to_angle(0);
-    }
-    if(Controller1.ButtonR2.PRESSED) {
-      Brain.resetTimer();
-      chassis.turn_to_angle(180);
-    }
-    if(Controller1.ButtonR1.PRESSED) {
-      Brain.resetTimer();
-      chassis.turn_to_angle(30);
-    }
-    // This is the main execution loop for the user control program.
-    // Each time through the loop your program should update motor + servo
-    // values based on feedback from the joysticks.
-
-    // ........................................................................
-    // Insert user code here. This is where you use the joystick values to
-    // update your motors, etc.
-    // ........................................................................
-
-    //Replace this line with chassis.control_tank(); for tank drive 
-    //or chassis.control_holonomic(); for holo drive.
-    // vex_printf("Hello World");
-
-    // chassis.control_tank();
-    // intakeControl();
-    // wingControl();
-    Brain.Screen.clearScreen();
-    // Brain.Screen.newLine();
-    Brain.Screen.print(chassis.turn_kp);
-    Brain.Screen.newLine();
-    Brain.Screen.print(chassis.turn_ki);
-    Brain.Screen.newLine();
-    Brain.Screen.print(chassis.turn_kd);
+    while (1) {
+      drive_tuning(1);
+      //i_drive();
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
   }

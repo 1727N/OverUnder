@@ -121,15 +121,11 @@ void Drive::turn_to_angle(float angle, float turn_max_voltage, float turn_settle
     float output = turnPID.compute(error);
     output = clamp(output, -turn_max_voltage, turn_max_voltage);
     drive_with_voltage(output, -output);
-    // Brain.Screen.newLine();
-    // Brain.Screen.print(Brain.timer(msec));
-    // Brain.Screen.newLine();
-    // Brain.Screen.print(error);
     std::cout<<"Error: "<<error<<std::endl;
     std::cout<<"Time: "<<Brain.timer(msec)<<std::endl;
     task::sleep(10);
-
   }
+  std::cout<<"Finished Settling :)"<<std::endl;
   DriveL.stop(hold);
   DriveR.stop(hold);
 }
@@ -166,9 +162,14 @@ void Drive::drive_distance(float distance, float heading, float drive_max_voltag
     drive_output = clamp(drive_output, -drive_max_voltage, drive_max_voltage);
     heading_output = clamp(heading_output, -heading_max_voltage, heading_max_voltage);
 
+    std::cout<<"Error: "<<drive_error<<std::endl;
+    std::cout<<"Heading: "<<heading_error<<std::endl;
+    std::cout<<"Time: "<<Brain.Timer<<std::endl;
+
     drive_with_voltage(drive_output+heading_output, drive_output-heading_output);
     task::sleep(10);
   }
+  std::cout<<"Finished Settling :)"<<std::endl;
   DriveL.stop(hold);
   DriveR.stop(hold);
 }
