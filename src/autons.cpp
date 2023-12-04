@@ -11,7 +11,7 @@ void default_constants(){
 }
 
 void andre_constants(){
-  chassis.set_drive_constants(10, 2.5, 0, 9, 0);
+  chassis.set_drive_constants(10, 4.5, 0, 11, 0);
   chassis.set_heading_constants(6, .4, 0, 1, 0);
   chassis.set_turn_constants(12, .79, 0, 4.85, 15);
   chassis.set_swing_constants(12, .3, .001, 2, 15);

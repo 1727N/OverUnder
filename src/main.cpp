@@ -142,6 +142,24 @@ void pre_auton(void) {
   
 }
 
+void debug_turn_to_angle(float angle)
+{
+  Brain.resetTimer();
+  chassis.turn_to_angle(angle);
+  std::cout << "KP " << chassis.turn_kp << std::endl << std::endl;
+  std::cout << "KI " << chassis.turn_ki << std::endl << std::endl;
+  std::cout << "KD " << chassis.turn_kd << std::endl << std::endl;
+}
+
+void debug_drive_distance(float distance)
+{
+  Brain.resetTimer();
+  chassis.drive_distance(distance);
+  std::cout << "KP " << chassis.drive_kp << std::endl << std::endl;
+  std::cout << "KI " << chassis.drive_ki << std::endl << std::endl;
+  std::cout << "KD " << chassis.drive_kd << std::endl << std::endl;
+}
+
 void outtake()
 {
   Intake.spinFor(reverse, 500, msec);
@@ -194,7 +212,7 @@ void drive_tuning(float tuning_factor)
   }
   if (Controller1.ButtonA.PRESSED){
     chassis.drive_kp -= tuning_factor;
-    std::cout << "KP "<<chassis.drive_kp << std::endl << std::endl;
+    std::cout << "KI "<<chassis.drive_kp << std::endl << std::endl;
   }
   if (Controller1.ButtonY.PRESSED){
     chassis.drive_kd += tuning_factor;
@@ -204,27 +222,18 @@ void drive_tuning(float tuning_factor)
     chassis.drive_kd -= tuning_factor;
     std::cout << "KD "<<chassis.drive_kd << std::endl << std::endl;
   } 
-  if(Controller1.ButtonDown.PRESSED)
-  {
-    std::cout << "KP " << chassis.drive_kp << std::endl << std::endl;
-    std::cout << "KI " << chassis.drive_ki << std::endl << std::endl;
-    std::cout << "KD " << chassis.drive_kd << std::endl << std::endl;
-  }
+
   if(Controller1.ButtonL1.PRESSED){
-    Brain.resetTimer();
-    chassis.drive_distance(24,0);
+    debug_drive_distance(24);
   }
   if(Controller1.ButtonL2.PRESSED) {
-    Brain.resetTimer();
-    chassis.drive_distance(-24,0);
+    debug_drive_distance(-24);
   }
   if(Controller1.ButtonR1.PRESSED) {
-    Brain.resetTimer();
-    chassis.drive_distance(12,0);
+    debug_drive_distance(6);
   }
   if(Controller1.ButtonR2.PRESSED) {
-    Brain.resetTimer();
-    chassis.drive_distance(-12,0);
+    debug_drive_distance(-6);
   }
 }
 
@@ -247,30 +256,21 @@ void turn_tuning(float tuning_factor)
     std::cout << chassis.turn_kd << std::endl << std::endl;
   }  
   
-  if(Controller1.ButtonDown.PRESSED)
-  {
-    std::cout << chassis.turn_kp << std::endl << std::endl;
-    std::cout << chassis.turn_ki << std::endl << std::endl;
-    std::cout << chassis.turn_kd << std::endl << std::endl;
-  }
-  
   if(Controller1.ButtonL1.PRESSED){
-    Brain.resetTimer();
-    chassis.turn_to_angle(90);
+    debug_turn_to_angle(90);
   }
   if(Controller1.ButtonL2.PRESSED) {
-    Brain.resetTimer();
-    chassis.turn_to_angle(0);
+    debug_turn_to_angle(0);
   }
   if(Controller1.ButtonR2.PRESSED) {
-    Brain.resetTimer();
-    chassis.turn_to_angle(180);
+    debug_turn_to_angle(180);
   }
   if(Controller1.ButtonR1.PRESSED) {
-    Brain.resetTimer();
-    chassis.turn_to_angle(30);
+    debug_turn_to_angle(-45);
   }
 }
+
+
 
 void catapultControl()
 {
@@ -306,16 +306,6 @@ void wingControl(){
   }
 }
 
-/*---------------------------------------------------------------------------*/
-/*                                                                           */
-/*                              User Control Task                            */
-/*                                                                           */
-/*  This task is used to control your robot during the user control phase of */
-/*  a VEX Competition.                                                       */
-/*                                                                           */
-/*  You must modify the code to add your own robot specific commands here.   */
-/*---------------------------------------------------------------------------*/
-
 void i_drive()
 {
   chassis.control_tank();
@@ -326,11 +316,55 @@ void i_drive()
 void usercontrol(void) {
   wait(5,sec);
   // User control code here, inside the loop
-    while (1) {
-      drive_tuning(1);
-      //i_drive();
+  while (1) {
+
+    i_drive();
+
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
+  }
+}
+
+void pid_tuning(void)
+{
+  int mode = 0; //0 - turning;     1 - driving
+  float t_factor = 1;
+
+  while(1)
+  {
+    if(Controller1.ButtonLeft.PRESSED)
+    {
+      mode = 0;
+      std::cout << "Tuning Turns" << std::endl;
+    }
+    else if(Controller1.ButtonRight.PRESSED)
+    {
+      mode = 1;
+      std::cout << "Tuning Drive" << std::endl;
+    }
+    else if(Controller1.ButtonUp.PRESSED)
+    {
+      t_factor *= 10;
+      std::cout<< "t_factor: " << t_factor<<std::endl;
+    }
+    else if(Controller1.ButtonDown.PRESSED)
+    {
+      t_factor *= 0.1;
+      std::cout<< "t_factor: " << t_factor<<std::endl;
+    }
+    else
+    {
+      switch (mode)
+      {
+      case 1:
+        drive_tuning(t_factor);
+        break;
+      case 0:
+        turn_tuning(t_factor);
+        break;
+      }
+    }
+    wait(20, msec);
   }
 }
 
@@ -340,6 +374,7 @@ void usercontrol(void) {
 int main() {
   // Set up callbacks for autonomous and driver control periods.
   Competition.autonomous(autonomous);
+  // Competition.drivercontrol(pid_tuning);
   Competition.drivercontrol(usercontrol);
 
   // Run the pre-autonomous function.
