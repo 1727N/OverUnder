@@ -98,6 +98,7 @@ PORT3,     -PORT4,
 
 int current_auton_selection = 2;
 bool auto_started = false;
+bool shooting = false;
 
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
@@ -162,7 +163,10 @@ void debug_drive_distance(float distance)
 
 void outtake()
 {
-  Intake.spinFor(reverse, 500, msec);
+  Intake.spin(reverse);
+  wait(100, sec);
+  chassis.drive_distance(3);
+
 }
 
 void far_side()
@@ -189,14 +193,17 @@ void far_side()
 
 void near_side()
 {
-  chassis.drive_distance(135);
+  chassis.drive_distance(-35);
   chassis.turn_to_angle(45);
+  chassis.drive_distance(5);
   outtake();
+  chassis.drive_distance(-5);
   chassis.turn_to_angle(180);
-  chassis.drive_distance(135);
-  chassis.turn_to_angle(138);
-  Intake.spin(forward);
+  chassis.drive_distance(35);
+  chassis.turn_to_angle(135);
   chassis.drive_distance(30);
+  wait(1, sec);
+  chassis.drive_distance(-5);
 }
 
 void autonomous(void) {
@@ -274,8 +281,13 @@ void turn_tuning(float tuning_factor)
 
 void catapultControl()
 {
-  if(Controller1.ButtonA.pressing()){
-      Catapult.spin(forward);
+  if(Controller1.ButtonR1.PRESSED)
+  {
+    shooting = !shooting;
+  }
+
+  if(shooting){
+      Catapult.spin(reverse, 7.5, volt);
   }
   else{     
     Catapult.stop();
@@ -298,23 +310,23 @@ void intakeControl(){
 }
 
 void wingControl(){
-  if (Controller1.ButtonR1.PRESSED){
+  if (Controller1.ButtonX.PRESSED){
     Wings.set(true);
   }
-  else if (Controller1.ButtonR2.PRESSED){
+  else if (Controller1.ButtonB.PRESSED){
     Wings.set(false);
   }
 }
 
 void i_drive()
 {
-  chassis.control_tank();
+  chassis.control_arcade(1, 0.8);
   intakeControl();
   wingControl();
+  catapultControl();
 }
 
 void usercontrol(void) {
-  wait(5,sec);
   // User control code here, inside the loop
   while (1) {
 
@@ -327,6 +339,7 @@ void usercontrol(void) {
 
 void pid_tuning(void)
 {
+  wait(5, sec);
   int mode = 0; //0 - turning;     1 - driving
   float t_factor = 1;
 
