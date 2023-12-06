@@ -164,8 +164,11 @@ void debug_drive_distance(float distance)
 void outtake()
 {
   Intake.spin(reverse);
-  wait(100, sec);
-  chassis.drive_distance(3);
+  wait(500, msec);
+  Intake.stop();
+  // chassis.drive_distance(3);
+  // chassis.drive_distance(-3);
+  
 
 }
 
@@ -193,22 +196,32 @@ void far_side()
 
 void near_side()
 {
-  chassis.drive_distance(-35);
+  Intake.spin(fwd, 1, volt);
+  chassis.drive_distance(24, 0, 8, 8);
   chassis.turn_to_angle(45);
-  chassis.drive_distance(5);
+  chassis.drive_distance(4, 45, 8, 8);
   outtake();
-  chassis.drive_distance(-5);
-  chassis.turn_to_angle(180);
-  chassis.drive_distance(35);
-  chassis.turn_to_angle(135);
-  chassis.drive_distance(30);
-  wait(1, sec);
-  chassis.drive_distance(-5);
+  chassis.drive_distance(-5, 45, 8, 8);
+  chassis.turn_to_angle(-135);
+  chassis.drive_distance(-12, -135, 8, 8);
+  chassis.drive_distance(12, -135, 8, 8);
+  chassis.right_swing_to_angle(180);
+  chassis.drive_distance(7, 180, 8, 8);
+  // chassis.turn_to_angle(0);
+  Wings.set(true);
+  // chassis.drive_distance(-26, 0, 8,8);
+  chassis.right_swing_to_angle(135);
+  chassis.drive_distance(-28, -45, 8,8);  
+}
+
+void swing()
+{
+  chassis.right_swing_to_angle(45);
 }
 
 void autonomous(void) {
-  // five_ball();
-  
+  near_side();
+  // swing();
 }
 
 void drive_tuning(float tuning_factor)
@@ -305,7 +318,7 @@ void intakeControl(){
     Intake.spin(reverse);
   }
   else {
-    Intake.stop(); 
+    Intake.spin(fwd, 0.2, volt); 
   }
 }
 
