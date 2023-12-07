@@ -174,17 +174,32 @@ void outtake()
 
 void far_side()
 {
+  Intake.spin(fwd);
   Wings.set(true);
-  chassis.drive_distance(24);
-  chassis.turn_to_angle(-90);
-  chassis.drive_distance(30);
-  outtake();
+  wait(100, msec);
+  Intake.spin(fwd, 1, volt);
+  chassis.drive_distance(12, 0, 8, 8);
   Wings.set(false);
-  chassis.drive_distance(-15);
+  wait(100, msec);
+  chassis.drive_distance(5, 0, 8, 8);
+  chassis.left_swing_to_angle(-45);
+  //chassis.turn_to_angle(-45);
+  //chassis.right_swing_to_angle(-45);
+  
+
+ 
+  wait(10, sec);
+  // chassis.turn_to_angle(-90);
+  chassis.drive_distance(18, -45, 8, 8);
+  // outtake();
+  chassis.drive_distance(-10, -45, 8, 8);
+  
+  wait(10, sec);
   chassis.turn_to_angle(-150);
   Intake.spin(forward);
   chassis.drive_distance(50);
-  Intake.stop();
+  Intake.spin(fwd, 1, volt);
+  // chassis.
   Wings.set(true);
   chassis.drive_distance(5);
   chassis.turn_to_angle(-90);
@@ -196,22 +211,35 @@ void far_side()
 
 void near_side()
 {
+  //Push load into goal
   Intake.spin(fwd, 1, volt);
   chassis.drive_distance(24, 0, 8, 8);
   chassis.turn_to_angle(45);
   chassis.drive_distance(4, 45, 8, 8);
   outtake();
   chassis.drive_distance(-5, 45, 8, 8);
-  chassis.turn_to_angle(-135);
-  chassis.drive_distance(-12, -135, 8, 8);
-  chassis.drive_distance(12, -135, 8, 8);
+  chassis.turn_to_angle(225);
+  chassis.drive_distance(-12, 225, 8, 8);
+  chassis.drive_distance(12, 225, 8, 8);
+
+  //Take out wp ball
   chassis.right_swing_to_angle(180);
-  chassis.drive_distance(7, 180, 8, 8);
+  // chassis.drive_distance(7, 180, 8, 8);
   // chassis.turn_to_angle(0);
   Wings.set(true);
+  wait(300, msec);
+  // chassis.drive_distance(12, 185, 8, 8);
   // chassis.drive_distance(-26, 0, 8,8);
   chassis.right_swing_to_angle(135);
-  chassis.drive_distance(-28, -45, 8,8);  
+  Wings.set(false);
+  wait(100, msec);
+  //Swing to gay
+  chassis.drive_distance(2, 135, 8, 8);
+  //chassis.turn_to_angle(0);
+  //chassis.drive_distance(-12, 0, 8, 8);
+  //chassis.turn_to_angle(315);
+  //chassis.drive_distance(-24, 315, 8, 8);
+  //chassis.drive_distance(-28, -45, 8,8);  
 }
 
 void swing()
@@ -220,8 +248,12 @@ void swing()
 }
 
 void autonomous(void) {
-  near_side();
-  // swing();
+  Inertial.calibrate();
+  while (Inertial.isCalibrating()){
+    wait(50, msec);
+  }
+  // near_side();
+  far_side();
 }
 
 void drive_tuning(float tuning_factor)

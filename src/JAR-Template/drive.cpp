@@ -162,14 +162,14 @@ void Drive::drive_distance(float distance, float heading, float drive_max_voltag
     drive_output = clamp(drive_output, -drive_max_voltage, drive_max_voltage);
     heading_output = clamp(heading_output, -heading_max_voltage, heading_max_voltage);
 
-    std::cout<<"Error: "<<drive_error<<std::endl;
-    std::cout<<"Heading: "<<heading_error<<std::endl;
-    std::cout<<"Time: "<<Brain.Timer<<std::endl;
+    //std::cout<<"Error: "<<drive_error<<std::endl;
+    //std::cout<<"Heading: "<<heading_error<<std::endl;
+    //std::cout<<"Time: "<<Brain.Timer<<std::endl;
 
     drive_with_voltage(drive_output+heading_output, drive_output-heading_output);
     task::sleep(10);
   }
-  std::cout<<"Finished Settling :)"<<std::endl;
+  //std::cout<<"Finished Settling :)"<<std::endl;
   DriveL.stop(hold);
   DriveR.stop(hold);
 }
@@ -193,6 +193,26 @@ void Drive::left_swing_to_angle(float angle, float swing_max_voltage, float swin
   DriveR.stop(hold);
 }
 
+void Drive::left_swing_reverse_to_angle(float angle){
+  left_swing_reverse_to_angle(angle, swing_max_voltage, swing_settle_error, swing_settle_time, swing_timeout, swing_kp, swing_ki, swing_kd, swing_starti);
+}
+
+void Drive::left_swing_reverse_to_angle(float angle, float swing_max_voltage, float swing_settle_error, float swing_settle_time, float swing_timeout, float swing_kp, float swing_ki, float swing_kd, float swing_starti){
+  desired_heading = angle;
+  PID swingPID(reduce_negative_180_to_180(angle - get_absolute_heading()), swing_kp, swing_ki, swing_kd, swing_starti, swing_settle_error, swing_settle_time, swing_timeout);
+  while(swingPID.is_settled() == false){
+    float error = reduce_negative_180_to_180(angle - get_absolute_heading());
+    float output = swingPID.compute(error);
+    output = clamp(output, -turn_max_voltage, turn_max_voltage);
+    DriveL.spin(fwd, output, volt);
+    DriveR.stop(hold);
+    task::sleep(10);
+  }
+  DriveL.stop(hold);
+  DriveR.stop(hold);
+}
+
+
 void Drive::right_swing_to_angle(float angle){
   right_swing_to_angle(angle, swing_max_voltage, swing_settle_error, swing_settle_time, swing_timeout, swing_kp, swing_ki, swing_kd, swing_starti);
 }
@@ -207,6 +227,32 @@ void Drive::right_swing_to_angle(float angle, float swing_max_voltage, float swi
     DriveR.spin(reverse, output, volt);
     DriveL.stop(hold);
     task::sleep(10);
+
+    std::cout<<"Error: "<<error<<std::endl;
+    std::cout<<"Heading: "<<get_absolute_heading()<<std::endl<<std::endl;
+  }
+  DriveL.stop(hold);
+  DriveR.stop(hold);
+}
+
+
+void Drive::right_swing_reverse_to_angle(float angle){
+  right_swing_reverse_to_angle(angle, swing_max_voltage, swing_settle_error, swing_settle_time, swing_timeout, swing_kp, swing_ki, swing_kd, swing_starti);
+}
+
+void Drive::right_swing_reverse_to_angle(float angle, float swing_max_voltage, float swing_settle_error, float swing_settle_time, float swing_timeout, float swing_kp, float swing_ki, float swing_kd, float swing_starti){
+  desired_heading = angle;
+  PID swingPID(reduce_negative_180_to_180(angle - get_absolute_heading()), swing_kp, swing_ki, swing_kd, swing_starti, swing_settle_error, swing_settle_time, swing_timeout);
+  while(swingPID.is_settled() == false){
+    float error = reduce_negative_180_to_180(angle - get_absolute_heading());
+    float output = swingPID.compute(error);
+    output = clamp(output, -turn_max_voltage, turn_max_voltage);
+    DriveR.spin(fwd, output, volt);
+    DriveL.stop(hold);
+    task::sleep(10);
+
+    std::cout<<"Error: "<<error<<std::endl;
+    std::cout<<"Heading: "<<get_absolute_heading()<<std::endl<<std::endl;
   }
   DriveL.stop(hold);
   DriveR.stop(hold);

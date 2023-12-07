@@ -104,9 +104,15 @@ public:
 
   void left_swing_to_angle(float angle);
   void left_swing_to_angle(float angle, float swing_max_voltage, float swing_settle_error, float swing_settle_time, float swing_timeout, float swing_kp, float swing_ki, float swing_kd, float swing_starti);
+  void left_swing_reverse_to_angle(float angle);
+  void left_swing_reverse_to_angle(float angle, float swing_max_voltage, float swing_settle_error, float swing_settle_time, float swing_timeout, float swing_kp, float swing_ki, float swing_kd, float swing_starti);
+  
   void right_swing_to_angle(float angle);
   void right_swing_to_angle(float angle, float swing_max_voltage, float swing_settle_error, float swing_settle_time, float swing_timeout, float swing_kp, float swing_ki, float swing_kd, float swing_starti);
-  
+  void right_swing_reverse_to_angle(float angle);
+  void right_swing_reverse_to_angle(float angle, float swing_max_voltage, float swing_settle_error, float swing_settle_time, float swing_timeout, float swing_kp, float swing_ki, float swing_kd, float swing_starti);
+
+
   Odom odom;
   float get_ForwardTracker_position();
   float get_SidewaysTracker_position();
