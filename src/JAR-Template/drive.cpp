@@ -115,7 +115,17 @@ void Drive::turn_to_angle(float angle, float turn_max_voltage, float turn_settle
 
 void Drive::turn_to_angle(float angle, float turn_max_voltage, float turn_settle_error, float turn_settle_time, float turn_timeout, float turn_kp, float turn_ki, float turn_kd, float turn_starti){
   desired_heading = angle;
-  PID turnPID(reduce_negative_180_to_180(angle - get_absolute_heading()), turn_kp, turn_ki, turn_kd, turn_starti, turn_settle_error, turn_settle_time, turn_timeout);
+  float i_error = reduce_negative_180_to_180(angle - get_absolute_heading());
+   PID turnPID(reduce_negative_180_to_180(angle - get_absolute_heading()), turn_kp, turn_ki, turn_kd, turn_starti, turn_settle_error, turn_settle_time, turn_timeout);
+  if(i_error >= 160)
+  {
+    turnPID.kp = 0.79;
+    turnPID.kd = 5.85;
+  }
+  else
+  {
+   
+  }
   while(turnPID.is_settled() == false){
     float error = reduce_negative_180_to_180(angle - get_absolute_heading());
     float output = turnPID.compute(error);

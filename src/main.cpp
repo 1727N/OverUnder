@@ -233,13 +233,20 @@ void near_side()
   chassis.right_swing_to_angle(135);
   Wings.set(false);
   wait(100, msec);
+  
+
   //Swing to gay
   chassis.drive_distance(2, 135, 8, 8);
-  //chassis.turn_to_angle(0);
-  //chassis.drive_distance(-12, 0, 8, 8);
-  //chassis.turn_to_angle(315);
-  //chassis.drive_distance(-24, 315, 8, 8);
-  //chassis.drive_distance(-28, -45, 8,8);  
+  chassis.turn_to_angle(180);
+  chassis.drive_distance(12, 180, 8, 8);
+  chassis.turn_to_angle(135);
+  chassis.drive_distance(24, 135, 8, 8);
+  chassis.left_swing_to_angle(180);
+  // chassis.turn_to_angle(0);
+  // chassis.drive_distance(-12, 0, 8, 8);
+  // chassis.turn_to_angle(315);
+  // chassis.drive_distance(-24, 315, 8, 8);
+  // chassis.drive_distance(-28, -45, 8,8);  
 }
 
 void swing()
@@ -253,7 +260,12 @@ void autonomous(void) {
     wait(50, msec);
   }
   // near_side();
-  far_side();
+  chassis.turn_to_angle(180);
+  chassis.turn_to_angle(10);
+  wait(2000, msec);
+  chassis.turn_to_angle(90);
+  chassis.turn_to_angle(0);
+  // far_side();
 }
 
 void drive_tuning(float tuning_factor)
@@ -264,7 +276,7 @@ void drive_tuning(float tuning_factor)
   }
   if (Controller1.ButtonA.PRESSED){
     chassis.drive_kp -= tuning_factor;
-    std::cout << "KI "<<chassis.drive_kp << std::endl << std::endl;
+    std::cout << "KP "<<chassis.drive_kp << std::endl << std::endl;
   }
   if (Controller1.ButtonY.PRESSED){
     chassis.drive_kd += tuning_factor;
@@ -293,19 +305,19 @@ void turn_tuning(float tuning_factor)
 {
   if (Controller1.ButtonX.PRESSED){
     chassis.turn_kp += tuning_factor;
-    std::cout << chassis.turn_kp << std::endl << std::endl;
+    std::cout << "KP " << chassis.turn_kp << std::endl << std::endl;
   }
   if (Controller1.ButtonA.PRESSED){
     chassis.turn_kp -= tuning_factor;
-    std::cout << chassis.turn_kp << std::endl << std::endl;
+    std::cout << "KP" << chassis.turn_kp << std::endl << std::endl;
   }
   if (Controller1.ButtonY.PRESSED){
     chassis.turn_kd += tuning_factor;
-    std::cout << chassis.turn_kd << std::endl << std::endl;
+    std::cout << "KD" << chassis.turn_kd << std::endl << std::endl;
   }
   if (Controller1.ButtonB.PRESSED){
     chassis.turn_kd -= tuning_factor;
-    std::cout << chassis.turn_kd << std::endl << std::endl;
+    std::cout << "KD" << chassis.turn_kd << std::endl << std::endl;
   }  
   
   if(Controller1.ButtonL1.PRESSED){
@@ -371,18 +383,7 @@ void i_drive()
   catapultControl();
 }
 
-void usercontrol(void) {
-  // User control code here, inside the loop
-  while (1) {
-
-    i_drive();
-
-    wait(20, msec); // Sleep the task for a short amount of time to
-                    // prevent wasted resources.
-  }
-}
-
-void pid_tuning(void)
+void pid_tuning()
 {
   wait(5, sec);
   int mode = 0; //0 - turning;     1 - driving
@@ -425,6 +426,19 @@ void pid_tuning(void)
     wait(20, msec);
   }
 }
+
+
+void usercontrol(void) {
+  // User control code here, inside the loop
+  while (1) {
+
+    // i_drive();
+    pid_tuning();
+    wait(20, msec); // Sleep the task for a short amount of time to
+                    // prevent wasted resources.
+  }
+}
+
 
 //
 // Main will set up the competition functions and callbacks.
