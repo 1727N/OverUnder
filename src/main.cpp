@@ -172,14 +172,20 @@ void outtake()
 
 }
 
+void wingControl(bool val)
+{
+  LWing.set(val);
+  RWing.set(val);
+}
+
 void far_side()
 {
   Intake.spin(fwd);
-  Wings.set(true);
+  wingControl(true);
   wait(100, msec);
   Intake.spin(fwd, 1, volt);
   chassis.drive_distance(12, 0, 8, 8);
-  Wings.set(false);
+  wingControl(false);
   wait(100, msec);
   chassis.drive_distance(5, 0, 8, 8);
   chassis.left_swing_to_angle(-45);
@@ -200,7 +206,7 @@ void far_side()
   chassis.drive_distance(50);
   Intake.spin(fwd, 1, volt);
   // chassis.
-  Wings.set(true);
+  wingControl(true);
   chassis.drive_distance(5);
   chassis.turn_to_angle(-90);
   chassis.drive_distance(5);
@@ -213,11 +219,11 @@ void near_side()
 {
   //Push load into goal
   Intake.spin(fwd, 1, volt);
-  chassis.drive_distance(24, 0, 8, 8);
+  chassis.drive_distance(26, 0, 8, 8);
   chassis.turn_to_angle(45);
-  chassis.drive_distance(4, 45, 8, 8);
+  chassis.drive_distance(8, 45, 8, 8);
   outtake();
-  chassis.drive_distance(-5, 45, 8, 8);
+  chassis.drive_distance(-7, 45, 8, 8);
   chassis.turn_to_angle(225);
   chassis.drive_distance(-12, 225, 8, 8);
   chassis.drive_distance(12, 225, 8, 8);
@@ -226,27 +232,45 @@ void near_side()
   chassis.right_swing_to_angle(180);
   // chassis.drive_distance(7, 180, 8, 8);
   // chassis.turn_to_angle(0);
-  Wings.set(true);
-  wait(300, msec);
+  RWing.set(true);
+  // wait(300, msec);
   // chassis.drive_distance(12, 185, 8, 8);
   // chassis.drive_distance(-26, 0, 8,8);
   chassis.right_swing_to_angle(135);
-  Wings.set(false);
-  wait(100, msec);
+  RWing.set(false);
+  // wait(100, msec);
   
 
   //Swing to gay
-  chassis.drive_distance(2, 135, 8, 8);
+  // chassis.drive_distance(2, 135, 8, 8);
   chassis.turn_to_angle(180);
-  chassis.drive_distance(12, 180, 8, 8);
+  chassis.drive_distance(13, 180, 8, 8);
   chassis.turn_to_angle(135);
-  chassis.drive_distance(24, 135, 8, 8);
-  chassis.left_swing_to_angle(180);
+  chassis.drive_distance(40, 135, 8, 8);
+
+
+  // LWing.set(true);
+  // chassis.left_swing_to_angle(150);
   // chassis.turn_to_angle(0);
   // chassis.drive_distance(-12, 0, 8, 8);
   // chassis.turn_to_angle(315);
   // chassis.drive_distance(-24, 315, 8, 8);
   // chassis.drive_distance(-28, -45, 8,8);  
+}
+
+void skills()
+{
+  Intake.spin(fwd, 1, volt);
+  chassis.drive_distance(26, 0, 8, 8);
+  chassis.turn_to_angle(45);
+  chassis.drive_distance(8, 45, 8, 8);
+  outtake();
+  chassis.drive_distance(-7, 45, 8, 8);
+  chassis.turn_to_angle(225);
+  chassis.drive_distance(-12, 225, 8, 8);
+  chassis.drive_distance(16, 225, 8, 8);
+
+  chassis.left_swing_to_angle(270);
 }
 
 void swing()
@@ -259,13 +283,13 @@ void autonomous(void) {
   while (Inertial.isCalibrating()){
     wait(50, msec);
   }
+  //Catapult.spinFor(reverse, 500, msec,);
+  wingControl(false);
+  Catapult.startSpinFor(reverse, 1, rev);
+  // wait(2, sec);
   // near_side();
-  chassis.turn_to_angle(180);
-  chassis.turn_to_angle(10);
-  wait(2000, msec);
-  chassis.turn_to_angle(90);
-  chassis.turn_to_angle(0);
   // far_side();
+  skills();
 }
 
 void drive_tuning(float tuning_factor)
@@ -368,10 +392,10 @@ void intakeControl(){
 
 void wingControl(){
   if (Controller1.ButtonX.PRESSED){
-    Wings.set(true);
+    wingControl(true);
   }
   else if (Controller1.ButtonB.PRESSED){
-    Wings.set(false);
+    wingControl(false);
   }
 }
 
@@ -430,10 +454,11 @@ void pid_tuning()
 
 void usercontrol(void) {
   // User control code here, inside the loop
+  wingControl(false);
   while (1) {
 
-    // i_drive();
-    pid_tuning();
+    i_drive();
+    // pid_tuning();
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
   }
