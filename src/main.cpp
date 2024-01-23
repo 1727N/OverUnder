@@ -23,7 +23,6 @@ competition Competition;
 /*  already have configured your robot manually with the sidebar configurer. */
 /*---------------------------------------------------------------------------*/
 
-
 Drive chassis(
 
 //Specify your drive setup below. There are seven options:
@@ -172,6 +171,11 @@ void outtake()
 
 }
 
+void spinCatapultFor(timeUnits unit, std::string difficulty)
+{
+
+}
+
 void wingControl(bool val)
 {
   LWing.set(val);
@@ -180,32 +184,52 @@ void wingControl(bool val)
 
 void far_side()
 {
-  Intake.spin(fwd);
-  wingControl(true);
+  Intake.spin(fwd, 6, volt);
+  // wingControl(true);
+  RWing.set(true);
   wait(100, msec);
   Intake.spin(fwd, 1, volt);
-  chassis.drive_distance(12, 0, 8, 8);
-  wingControl(false);
-  wait(100, msec);
-  chassis.drive_distance(5, 0, 8, 8);
-  chassis.left_swing_to_angle(-45);
-  //chassis.turn_to_angle(-45);
-  //chassis.right_swing_to_angle(-45);
+  chassis.drive_distance(10, 0, 8, 8);
+  chassis.right_swing_to_angle(330);
+  // chassis.right_swing_to_angle(330, 6, chassis.swing_settle_error, chassis.swing_settle_time, chassis.swing_timeout, chassis.swing_kp, chassis.swing_ki, chassis.swing_kd, chassis.swing_starti);
+  // chassis.turn_to_angle(330);
+  chassis.drive_distance(10, 330, 8, 8);
+  // wingControl(false);
+  RWing.set(false);
+  chassis.drive_distance(10, 330, 8, 8);
+  outtake();
   
+  chassis.drive_distance(-9, 330, 8, 8);
+  chassis.turn_to_angle(150);
+  chassis.drive_distance(-10, 150, 6, 6);
 
- 
-  wait(10, sec);
-  // chassis.turn_to_angle(-90);
-  chassis.drive_distance(18, -45, 8, 8);
-  // outtake();
-  chassis.drive_distance(-10, -45, 8, 8);
-  
-  wait(10, sec);
-  chassis.turn_to_angle(-150);
+  chassis.drive_distance(5, 150, 8, 8);
+  chassis.turn_to_angle(240);
   Intake.spin(forward);
-  chassis.drive_distance(50);
+  chassis.drive_distance(50, 240, 6, 6);
+  //grab first ball
+  wait(1, sec);
+  // chassis.turn_to_angle(270);
+  
+  // chassis.drive_distance(10, 240, 8, 8);
   Intake.spin(fwd, 1, volt);
-  // chassis.
+  chassis.right_swing_to_angle(350);
+  chassis.turn_to_angle(350);
+  chassis.drive_distance(10, 350, 8, 8);
+  outtake();
+  chassis.drive_distance(-20, 350, 8, 8);
+
+  //grab middle ball
+  chassis.turn_to_angle(270);
+  Intake.spin(forward);
+  chassis.drive_distance(10, 270, 8, 8);
+  Intake.spin(forward, 6, volt);
+  wingControl(true);
+  chassis.right_swing_to_angle(45);
+  chassis.drive_distance(30, 45, 8, 8);
+  outtake();
+
+
   wingControl(true);
   chassis.drive_distance(5);
   chassis.turn_to_angle(-90);
@@ -246,7 +270,7 @@ void near_side()
   chassis.turn_to_angle(180);
   chassis.drive_distance(13, 180, 8, 8);
   chassis.turn_to_angle(135);
-  chassis.drive_distance(40, 135, 8, 8);
+  chassis.drive_distance(32, 135, 8, 8);
 
 
   // LWing.set(true);
@@ -263,14 +287,19 @@ void skills()
   Intake.spin(fwd, 1, volt);
   chassis.drive_distance(26, 0, 8, 8);
   chassis.turn_to_angle(45);
-  chassis.drive_distance(8, 45, 8, 8);
+  chassis.drive_distance(5, 45, 8, 8);
   outtake();
-  chassis.drive_distance(-7, 45, 8, 8);
+  chassis.drive_distance(-5, 45, 6, 6);
   chassis.turn_to_angle(225);
-  chassis.drive_distance(-12, 225, 8, 8);
-  chassis.drive_distance(16, 225, 8, 8);
+  chassis.drive_distance(-8, 225, 6, 6);
+  chassis.drive_distance(7, 225, 8, 8);
 
   chassis.left_swing_to_angle(270);
+  chassis.drive_distance(5, 270, 6, 6);
+  chassis.right_swing_to_angle(290);
+  chassis.drive_distance(1, 290, 4, 4);
+  Catapult.spin(reverse, 8, volt);
+  wait(20, sec);
 }
 
 void swing()
@@ -284,12 +313,12 @@ void autonomous(void) {
     wait(50, msec);
   }
   //Catapult.spinFor(reverse, 500, msec,);
+  wait(2, sec);
   wingControl(false);
   Catapult.startSpinFor(reverse, 1, rev);
-  // wait(2, sec);
-  // near_side();
-  // far_side();
-  skills();
+  //near_side();
+  far_side();
+  //skills();
 }
 
 void drive_tuning(float tuning_factor)
