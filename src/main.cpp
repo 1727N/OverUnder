@@ -22,6 +22,17 @@ competition Competition;
 /*  all the physical constants and values for your robot. You should         */
 /*  already have configured your robot manually with the sidebar configurer. */
 /*---------------------------------------------------------------------------*/
+enum difficulty
+{
+  Easy = 0,
+  Normal = 1,
+  Hard = 2,
+  Insane = 3,
+  Crazy = 4,
+  Impossible = 5
+
+
+};
 
 Drive chassis(
 
@@ -99,6 +110,27 @@ int current_auton_selection = 2;
 bool auto_started = false;
 bool shooting = false;
 
+double difficultyVoltage(int difficulty)
+{
+  switch(difficulty)
+  {
+    case Easy:
+      return 8;
+    case Normal:
+      return 9;
+    case Hard:
+      return 9.5;
+    case Insane:
+      return 10;
+    case Crazy:
+      return 11;
+    case Impossible:
+      return 12;
+    default:
+      return 7.5;
+  }
+}
+
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
@@ -160,16 +192,21 @@ void debug_drive_distance(float distance)
   std::cout << "KD " << chassis.drive_kd << std::endl << std::endl;
 }
 
+void outtake(int waittime)
+{
+  Intake.spin(reverse, 12, volt);
+  wait(waittime, msec);
+  Intake.stop();
+}
+
 void outtake()
 {
-  Intake.spin(reverse);
-  wait(500, msec);
-  Intake.stop();
+  outtake(500);
   // chassis.drive_distance(3);
   // chassis.drive_distance(-3);
-  
-
 }
+
+
 
 void spinCatapultFor(timeUnits unit, std::string difficulty)
 {
@@ -198,45 +235,48 @@ void far_side()
   RWing.set(false);
   chassis.drive_distance(10, 330, 8, 8);
   outtake();
-  
   chassis.drive_distance(-9, 330, 8, 8);
-  chassis.turn_to_angle(150);
-  chassis.drive_distance(-10, 150, 6, 6);
 
-  chassis.drive_distance(5, 150, 8, 8);
+  //back in
+  // chassis.turn_to_angle(150);
+  // chassis.drive_distance(-5, 150, 6, 6);
+  // chassis.drive_distance(5, 150, 8, 8);
+
   chassis.turn_to_angle(240);
   Intake.spin(forward);
-  chassis.drive_distance(50, 240, 6, 6);
+  chassis.drive_distance(45, 240, 6, 6);
   //grab first ball
-  wait(1, sec);
+  // wait(1, sec);
   // chassis.turn_to_angle(270);
   
   // chassis.drive_distance(10, 240, 8, 8);
   Intake.spin(fwd, 1, volt);
-  chassis.right_swing_to_angle(350);
-  chassis.turn_to_angle(350);
-  chassis.drive_distance(10, 350, 8, 8);
-  outtake();
-  chassis.drive_distance(-20, 350, 8, 8);
+  // chassis.right_swing_to_angle(350);
+  chassis.turn_to_angle(10);
+  // chassis.drive_distance(15, 10, 8, 8);
+  outtake(1000);
+  // chassis.drive_distance(-5, 10, 8, 8);
 
   //grab middle ball
-  chassis.turn_to_angle(270);
+  chassis.turn_to_angle(293);
   Intake.spin(forward);
-  chassis.drive_distance(10, 270, 8, 8);
+  chassis.drive_distance(20, 293, 8, 8);
   Intake.spin(forward, 6, volt);
-  wingControl(true);
-  chassis.right_swing_to_angle(45);
-  chassis.drive_distance(30, 45, 8, 8);
-  outtake();
 
+  // chassis.right_swing_to_angle(45);
+  chassis.turn_to_angle(30);
 
   wingControl(true);
-  chassis.drive_distance(5);
-  chassis.turn_to_angle(-90);
-  chassis.drive_distance(5);
-  chassis.turn_to_angle(0);
-  chassis.drive_distance(48);
   outtake();
+  chassis.drive_distance(28, 30, 8, 8);
+ 
+
+  // chassis.drive_distance(5);
+  // chassis.turn_to_angle(-90);
+  // chassis.drive_distance(5);
+  // chassis.turn_to_angle(0);
+  // chassis.drive_distance(48);
+  // outtake();
 }
 
 void near_side()
@@ -315,7 +355,7 @@ void autonomous(void) {
   //Catapult.spinFor(reverse, 500, msec,);
   wait(2, sec);
   wingControl(false);
-  Catapult.startSpinFor(reverse, 1, rev);
+  Catapult.spinFor(reverse, 1, rev, false);
   //near_side();
   far_side();
   //skills();
@@ -389,15 +429,16 @@ void turn_tuning(float tuning_factor)
 
 
 
-void catapultControl()
+void catapultControl(int diff)
 {
+  double volts = difficultyVoltage(diff);
   if(Controller1.ButtonR1.PRESSED)
   {
     shooting = !shooting;
   }
 
   if(shooting){
-      Catapult.spin(reverse, 7.5, volt);
+      Catapult.spin(reverse, volts, volt);
   }
   else{     
     Catapult.stop();
@@ -433,7 +474,8 @@ void i_drive()
   chassis.control_arcade(1, 0.8);
   intakeControl();
   wingControl();
-  catapultControl();
+  //Easy, Normal, Hard, Insane, Crazy, Impossible
+  catapultControl(Hard);
 }
 
 void pid_tuning()
