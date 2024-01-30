@@ -326,7 +326,7 @@ void near_side()
 void skills()
 {
   Intake.spin(fwd, 1, volt);
-  chassis.drive_distance(26, 0, 8, 8);
+  chassis.drive_distance(24, 0, 8, 8);
   chassis.turn_to_angle(45);
   chassis.drive_distance(5, 45, 8, 8);
   outtake();
@@ -339,9 +339,20 @@ void skills()
   chassis.drive_distance(5, 270, 6, 6);
   chassis.right_swing_to_angle(290);
   chassis.drive_distance(1, 290, 4, 4);
-  Catapult.spin(reverse, difficultyVoltage(Normal), volt);
+  // Catapult.spin(reverse, difficultyVoltage(Normal), volt);
   // Catapult.spin(reverse, 8, volt);
   // wait(20, sec);
+  wait(1, sec);
+  chassis.drive_distance(-24, 290, 8, 8);
+  // chassis.turn_to_angle(135);
+  // chassis.drive_distance(10, 135, 8, 8);
+  
+  chassis.turn_to_angle(45);
+  chassis.drive_distance(36, 45, 8, 8);
+  chassis.turn_to_angle(135);
+  wingControl(true);
+  chassis.drive_distance(120, 135, 12, 12);
+  
 }
 
 void swing()
