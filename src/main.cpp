@@ -119,9 +119,9 @@ double difficultyVoltage(int difficulty)
     case Normal:
       return 9;
     case Hard:
-      return 9.5;
-    case Insane:
       return 10;
+    case Insane:
+      return 10.5;
     case Crazy:
       return 11;
     case Impossible:
@@ -285,9 +285,10 @@ void near_side()
   Intake.spin(fwd, 1, volt);
   chassis.drive_distance(26, 0, 8, 8);
   chassis.turn_to_angle(45);
-  chassis.drive_distance(8, 45, 8, 8);
+  chassis.drive_distance(6, 45, 8, 8);
   outtake();
-  chassis.drive_distance(-7, 45, 8, 8);
+
+  chassis.drive_distance(-8, 45, 8, 8);
   chassis.turn_to_angle(225);
   chassis.drive_distance(-12, 225, 8, 8);
   chassis.drive_distance(12, 225, 8, 8);
@@ -310,7 +311,7 @@ void near_side()
   chassis.turn_to_angle(180);
   chassis.drive_distance(13, 180, 8, 8);
   chassis.turn_to_angle(135);
-  chassis.drive_distance(32, 135, 8, 8);
+  chassis.drive_distance(28, 135, 8, 8);
 
 
   // LWing.set(true);
@@ -338,8 +339,9 @@ void skills()
   chassis.drive_distance(5, 270, 6, 6);
   chassis.right_swing_to_angle(290);
   chassis.drive_distance(1, 290, 4, 4);
-  Catapult.spin(reverse, 8, volt);
-  wait(20, sec);
+  Catapult.spin(reverse, difficultyVoltage(Normal), volt);
+  // Catapult.spin(reverse, 8, volt);
+  // wait(20, sec);
 }
 
 void swing()
@@ -356,9 +358,9 @@ void autonomous(void) {
   wait(2, sec);
   wingControl(false);
   Catapult.spinFor(reverse, 1, rev, false);
-  //near_side();
-  far_side();
-  //skills();
+  // near_side();
+  //far_side();
+  skills();
 }
 
 void drive_tuning(float tuning_factor)
@@ -475,7 +477,7 @@ void i_drive()
   intakeControl();
   wingControl();
   //Easy, Normal, Hard, Insane, Crazy, Impossible
-  catapultControl(Hard);
+  catapultControl(Normal);
 }
 
 void pid_tuning()
