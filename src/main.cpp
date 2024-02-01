@@ -340,9 +340,10 @@ void skills()
   chassis.right_swing_to_angle(290);
   chassis.drive_distance(1, 290, 4, 4);
   // Catapult.spin(reverse, difficultyVoltage(Normal), volt);
-  // Catapult.spin(reverse, 8, volt);
-  // wait(20, sec);
-  wait(1, sec);
+  Catapult.spin(reverse, 8, volt);
+  wait(40, sec);
+  Catapult.stop();
+
   chassis.drive_distance(-24, 290, 8, 8);
   // chassis.turn_to_angle(135);
   // chassis.drive_distance(10, 135, 8, 8);
@@ -369,9 +370,9 @@ void autonomous(void) {
   wait(2, sec);
   wingControl(false);
   Catapult.spinFor(reverse, 1, rev, false);
-  // near_side();
-  //far_side();
-  skills();
+  //near_side();
+  far_side();
+  //skills();
 }
 
 void drive_tuning(float tuning_factor)
@@ -484,11 +485,11 @@ void wingControl(){
 
 void i_drive()
 {
-  chassis.control_arcade(1, 0.8);
+  chassis.control_arcade(1, 0.5);
   intakeControl();
   wingControl();
   //Easy, Normal, Hard, Insane, Crazy, Impossible
-  catapultControl(Normal);
+  catapultControl(Easy);
 }
 
 void pid_tuning()
