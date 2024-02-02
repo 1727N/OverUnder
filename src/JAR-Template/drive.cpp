@@ -440,6 +440,13 @@ void Drive::control_arcade(float throttleMultiplier, float turnMultiplier, float
 
   float throttle = deadband(controller(primary).Axis3.value(), throttleDeadzone);
   float turn = deadband(controller(primary).Axis1.value(), turnDeadzone);
+
+  //float newThrottle = pow(to_volt(throttle), 3)/pow(12, 2);
+  //float newTurn = pow(to_volt(turn), 3)/pow(7.2, 2);
+  
+  //throttle = newThrottle;
+  //turn = newTurn;
+
   throttle*=throttleMultiplier;
   turn*=turnMultiplier;
   DriveL.spin(fwd, to_volt(throttle+turn), volt);

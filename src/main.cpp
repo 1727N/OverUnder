@@ -371,7 +371,7 @@ void autonomous(void) {
   wingControl(false);
   Catapult.spinFor(reverse, 1, rev, false);
   //near_side();
-  far_side();
+  //far_side();
   //skills();
 }
 
@@ -443,7 +443,7 @@ void turn_tuning(float tuning_factor)
 
 
 
-void catapultControl(int diff)
+void catapultControl(double diff)
 {
   double volts = difficultyVoltage(diff);
   if(Controller1.ButtonR1.PRESSED)
@@ -485,11 +485,11 @@ void wingControl(){
 
 void i_drive()
 {
-  chassis.control_arcade(1, 0.5);
+  chassis.control_arcade(1, 0.65);
   intakeControl();
   wingControl();
   //Easy, Normal, Hard, Insane, Crazy, Impossible
-  catapultControl(Easy);
+  catapultControl(8.5);
 }
 
 void pid_tuning()
