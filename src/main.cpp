@@ -220,7 +220,9 @@ void wingControl(bool val)
 }
 
 void far_side()
-{
+{ 
+  chassis.drive_timeout = 1000;
+  chassis.turn_timeout = 800;
   Intake.spin(fwd, 6, volt);
   // wingControl(true);
   RWing.set(true);
@@ -241,10 +243,11 @@ void far_side()
   // chassis.turn_to_angle(150);
   // chassis.drive_distance(-5, 150, 6, 6);
   // chassis.drive_distance(5, 150, 8, 8);
+  chassis.drive_timeout = 2000;
 
-  chassis.turn_to_angle(240);
+  chassis.turn_to_angle(247);
   Intake.spin(forward);
-  chassis.drive_distance(45, 240, 6, 6);
+  chassis.drive_distance(45, 247, 6, 6);
   //grab first ball
   // wait(1, sec);
   // chassis.turn_to_angle(270);
@@ -252,7 +255,7 @@ void far_side()
   // chassis.drive_distance(10, 240, 8, 8);
   Intake.spin(fwd, 1, volt);
   // chassis.right_swing_to_angle(350);
-  chassis.turn_to_angle(10);
+  chassis.turn_to_angle(25);
   // chassis.drive_distance(15, 10, 8, 8);
   outtake(1000);
   // chassis.drive_distance(-5, 10, 8, 8);
@@ -264,13 +267,14 @@ void far_side()
   Intake.spin(forward, 6, volt);
 
   // chassis.right_swing_to_angle(45);
-  chassis.turn_to_angle(30);
+  chassis.turn_to_angle(43);
 
   wingControl(true);
   outtake();
-  chassis.drive_distance(28, 30, 8, 8);
- 
-
+  chassis.drive_distance(28, 43, 12, 8);
+  chassis.drive_distance(-10, 43, 12, 12);
+  wingControl(false);
+  Catapult.spinFor(reverse, 0.3, rev, false);
   // chassis.drive_distance(5);
   // chassis.turn_to_angle(-90);
   // chassis.drive_distance(5);
@@ -278,6 +282,69 @@ void far_side()
   // chassis.drive_distance(48);
   // outtake();
 }
+
+// void farBack_side()
+// { 
+//   chassis.drive_timeout = 1000;
+//   chassis.turn_timeout = 800;
+//   Intake.spin(fwd, 6, volt);
+//   // wingControl(true);
+//   RWing.set(true);
+//   wait(100, msec);
+//   Intake.spin(fwd, 1, volt);
+//   chassis.drive_distance(10, 0, 8, 8);
+//   chassis.right_swing_to_angle(330);
+//   // chassis.right_swing_to_angle(330, 6, chassis.swing_settle_error, chassis.swing_settle_time, chassis.swing_timeout, chassis.swing_kp, chassis.swing_ki, chassis.swing_kd, chassis.swing_starti);
+//   // chassis.turn_to_angle(330);
+//   chassis.drive_distance(10, 330, 8, 8);
+//   // wingControl(false);
+//   RWing.set(false);
+//   chassis.drive_distance(5, 330, 8, 8);
+//   outtake();
+//   chassis.drive_distance(-5, 330, 8, 8);
+
+//   //back in
+//   chassis.turn_to_angle(150);
+//   chassis.drive_distance(-5, 150, 6, 6);
+//   chassis.drive_distance(5, 150, 8, 8);
+//   chassis.drive_timeout = 2000;
+
+//   chassis.turn_to_angle(247);
+//   Intake.spin(forward);
+//   chassis.drive_distance(45, 247, 6, 6);
+//   //grab first ball
+//   // wait(1, sec);
+//   // chassis.turn_to_angle(270);
+  
+//   // chassis.drive_distance(10, 240, 8, 8);
+//   Intake.spin(fwd, 1, volt);
+//   // chassis.right_swing_to_angle(350);
+//   chassis.turn_to_angle(25);
+//   // chassis.drive_distance(15, 10, 8, 8);
+//   outtake(1000);
+//   // chassis.drive_distance(-5, 10, 8, 8);
+
+//   //grab middle ball
+//   chassis.turn_to_angle(293);
+//   Intake.spin(forward);
+//   chassis.drive_distance(20, 293, 8, 8);
+//   Intake.spin(forward, 6, volt);
+
+//   // chassis.right_swing_to_angle(45);
+//   chassis.turn_to_angle(43);
+
+//   wingControl(true);
+//   outtake();
+//   chassis.drive_distance(28, 43, 8, 8);
+ 
+
+//   // chassis.drive_distance(5);
+//   // chassis.turn_to_angle(-90);
+//   // chassis.drive_distance(5);
+//   // chassis.turn_to_angle(0);
+//   // chassis.drive_distance(48);
+//   // outtake();
+// }
 
 void near_side()
 {
@@ -311,7 +378,7 @@ void near_side()
   chassis.turn_to_angle(180);
   chassis.drive_distance(13, 180, 8, 8);
   chassis.turn_to_angle(135);
-  chassis.drive_distance(28, 135, 8, 8);
+  chassis.drive_distance(29.2, 135, 8, 8);
 
 
   // LWing.set(true);
@@ -321,6 +388,24 @@ void near_side()
   // chassis.turn_to_angle(315);
   // chassis.drive_distance(-24, 315, 8, 8);
   // chassis.drive_distance(-28, -45, 8,8);  
+}
+
+void fullFwd(int amtTime){
+  FL.spin(fwd, 12, volt);
+  ML.spin(fwd, 12, volt);
+  BL.spin(fwd, 12, volt);
+  FR.spin(fwd, 12, volt);
+  MR.spin(fwd, 12, volt);
+  BR.spin(fwd, 12, volt);
+
+  wait(amtTime, sec);
+
+  FL.stop();
+  ML.stop();
+  BL.stop();
+  FR.stop();
+  MR.stop();
+  BR.stop();
 }
 
 void skills()
@@ -341,7 +426,7 @@ void skills()
   chassis.drive_distance(1, 290, 4, 4);
   // Catapult.spin(reverse, difficultyVoltage(Normal), volt);
   Catapult.spin(reverse, 8, volt);
-  wait(40, sec);
+  wait(30, sec);
   Catapult.stop();
 
   chassis.drive_distance(-24, 290, 8, 8);
@@ -352,8 +437,34 @@ void skills()
   chassis.drive_distance(36, 45, 8, 8);
   chassis.turn_to_angle(135);
   wingControl(true);
-  chassis.drive_distance(120, 135, 12, 12);
-  
+  //chassis.drive_distance(160, 135, 12, 12);
+  fullFwd(4);
+  chassis.drive_distance(-10, 135, 12, 12);
+  fullFwd(4);
+  chassis.drive_distance(-20, 135, 12, 12);
+}
+
+void safeFar(){
+  Intake.spin(fwd, 6, volt);
+  // wingControl(true);
+  RWing.set(true);
+  wait(100, msec);
+  Intake.spin(fwd, 1, volt);
+  chassis.drive_distance(10, 0, 8, 8);
+  chassis.right_swing_to_angle(330);
+  // chassis.right_swing_to_angle(330, 6, chassis.swing_settle_error, chassis.swing_settle_time, chassis.swing_timeout, chassis.swing_kp, chassis.swing_ki, chassis.swing_kd, chassis.swing_starti);
+  // chassis.turn_to_angle(330);
+  outtake();
+  chassis.drive_distance(10, 330, 8, 8);
+  // wingControl(false);
+  RWing.set(false);
+  chassis.drive_distance(10, 330, 8, 8);
+  outtake();
+  chassis.drive_distance(-9, 330, 8, 8);
+
+  chassis.turn_to_angle(150);
+  chassis.drive_distance(-10, 150, 12, 6);
+  chassis.drive_distance(10, 150, 8, 8);
 }
 
 void swing()
@@ -361,17 +472,41 @@ void swing()
   chassis.right_swing_to_angle(45);
 }
 
-void autonomous(void) {
+void autonWait(){
   Inertial.calibrate();
   while (Inertial.isCalibrating()){
     wait(50, msec);
   }
-  //Catapult.spinFor(reverse, 500, msec,);
   wait(2, sec);
+}
+
+void safeSafeFar(){
+  Intake.spin(fwd, 1, volt);
+  chassis.drive_distance(50, 0, 10, 8);
+  chassis.turn_to_angle(90);
+  Intake.spin(reverse, 1, volt);
+  chassis.drive_distance(15);
+  chassis.drive_distance(-15);
+
+}
+
+void autonomous(void) { 
+  //autonWait();
+
   wingControl(false);
   Catapult.spinFor(reverse, 1, rev, false);
+  
+  //chassis.drive_distance(160, 0, 12, 12);
+  //chassis.drive_distance(-20, 0, 12, 12);
+
+  //safeSafeFar();
   //near_side();
-  //far_side();
+  far_side();
+  Catapult.spinFor(reverse, 0.35, rev, false);
+
+  //farBack_side();
+
+  //safeFar();
   //skills();
 }
 
@@ -489,7 +624,7 @@ void i_drive()
   intakeControl();
   wingControl();
   //Easy, Normal, Hard, Insane, Crazy, Impossible
-  catapultControl(8.5);
+  catapultControl(9.5);
 }
 
 void pid_tuning()

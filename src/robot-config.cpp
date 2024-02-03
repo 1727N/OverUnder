@@ -28,6 +28,8 @@ motor Intake = motor(PORT11, ratio18_1, false);
 motor Catapult = motor(PORT1, ratio18_1, false);
 inertial Inertial = inertial(PORT7);
 
+limit Limit = limit(Brain.ThreeWirePort.G);
+
 // digital_out Wings = digital_out(Brain.ThreeWirePort.H);
 digital_out LWing = digital_out(Brain.ThreeWirePort.A);
 digital_out RWing = digital_out(Brain.ThreeWirePort.H);

@@ -15,6 +15,8 @@ extern motor Intake;
 extern motor Catapult;
 extern inertial Inertial;
 
+extern limit Limit;
+
 extern digital_out LWing;
 extern digital_out RWing;
 // VEXcode devices
