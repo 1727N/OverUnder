@@ -311,7 +311,7 @@ void near_side()
   chassis.turn_to_angle(180);
   chassis.drive_distance(13, 180, 8, 8);
   chassis.turn_to_angle(135);
-  chassis.drive_distance(28, 135, 8, 8);
+  chassis.drive_distance(29.2, 135, 8, 8);
 
 
   // LWing.set(true);
@@ -341,7 +341,7 @@ void skills()
   chassis.drive_distance(1, 290, 4, 4);
   // Catapult.spin(reverse, difficultyVoltage(Normal), volt);
   Catapult.spin(reverse, 8, volt);
-  wait(40, sec);
+  wait(26, sec);
   Catapult.stop();
 
   chassis.drive_distance(-24, 290, 8, 8);
@@ -352,8 +352,31 @@ void skills()
   chassis.drive_distance(36, 45, 8, 8);
   chassis.turn_to_angle(135);
   wingControl(true);
-  chassis.drive_distance(120, 135, 12, 12);
-  
+  chassis.drive_distance(160, 135, 12, 12);
+  chassis.drive_distance(-20, 135, 12, 12);
+}
+
+void safeFar(){
+  Intake.spin(fwd, 6, volt);
+  // wingControl(true);
+  RWing.set(true);
+  wait(100, msec);
+  Intake.spin(fwd, 1, volt);
+  chassis.drive_distance(10, 0, 8, 8);
+  chassis.right_swing_to_angle(330);
+  // chassis.right_swing_to_angle(330, 6, chassis.swing_settle_error, chassis.swing_settle_time, chassis.swing_timeout, chassis.swing_kp, chassis.swing_ki, chassis.swing_kd, chassis.swing_starti);
+  // chassis.turn_to_angle(330);
+  outtake();
+  chassis.drive_distance(10, 330, 8, 8);
+  // wingControl(false);
+  RWing.set(false);
+  chassis.drive_distance(10, 330, 8, 8);
+  outtake();
+  chassis.drive_distance(-9, 330, 8, 8);
+
+  chassis.turn_to_angle(150);
+  chassis.drive_distance(-10, 150, 12, 6);
+  chassis.drive_distance(10, 150, 8, 8);
 }
 
 void swing()
@@ -361,17 +384,37 @@ void swing()
   chassis.right_swing_to_angle(45);
 }
 
-void autonomous(void) {
+void autonWait(){
   Inertial.calibrate();
   while (Inertial.isCalibrating()){
     wait(50, msec);
   }
-  //Catapult.spinFor(reverse, 500, msec,);
   wait(2, sec);
+}
+
+void safeSafeFar(){
+  Intake.spin(fwd, 1, volt);
+  chassis.drive_distance(50, 0, 10, 8);
+  chassis.turn_to_angle(90);
+  Intake.spin(reverse, 1, volt);
+  chassis.drive_distance(15);
+  chassis.drive_distance(-15);
+
+}
+
+void autonomous(void) { 
+  //autonWait();
+
   wingControl(false);
   Catapult.spinFor(reverse, 1, rev, false);
-  //near_side();
-  far_side();
+
+  //chassis.drive_distance(160, 135, 12, 12);
+  //chassis.drive_distance(-20, 135, 12, 12);
+
+  //safeSafeFar();
+  near_side();
+  //far_side();
+  //safeFar();
   //skills();
 }
 
@@ -443,7 +486,7 @@ void turn_tuning(float tuning_factor)
 
 
 
-void catapultControl(int diff)
+void catapultControl(double diff)
 {
   double volts = difficultyVoltage(diff);
   if(Controller1.ButtonR1.PRESSED)
@@ -485,11 +528,11 @@ void wingControl(){
 
 void i_drive()
 {
-  chassis.control_arcade(1, 0.5);
+  chassis.control_arcade(1, 0.65);
   intakeControl();
   wingControl();
   //Easy, Normal, Hard, Insane, Crazy, Impossible
-  catapultControl(Easy);
+  catapultControl(8.5);
 }
 
 void pid_tuning()
