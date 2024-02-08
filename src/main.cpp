@@ -434,14 +434,29 @@ void skills()
   // chassis.drive_distance(10, 135, 8, 8);
   
   chassis.turn_to_angle(45);
-  chassis.drive_distance(36, 45, 8, 8);
+  
+
+  //// take the long way home
+  chassis.drive_distance(72,45,8,8);
+  chassis.turn_to_angle(135);
+  chassis.drive_distance(36, 135, 8, 8);
+  chassis.turn_to_angle(225);
+  chassis.drive_distance(16, 225, 8, 8);
+  chassis.turn_to_angle(315);
+  chassis.drive_distance(20, 315, 8, 8);
   chassis.turn_to_angle(135);
   wingControl(true);
-  //chassis.drive_distance(160, 135, 12, 12);
-  fullFwd(4);
-  chassis.drive_distance(-10, 135, 12, 12);
-  fullFwd(4);
-  chassis.drive_distance(-20, 135, 12, 12);
+  chassis.drive_distance(20, 135, 8, 8);
+
+  //Drive through mid pole
+  // chassis.drive_distance(36, 45, 8, 8);
+  // chassis.turn_to_angle(135);
+  // wingControl(true);
+  // //chassis.drive_distance(160, 135, 12, 12);
+  // fullFwd(4);
+  // chassis.drive_distance(-10, 135, 12, 12);
+  // fullFwd(4);
+  // chassis.drive_distance(-20, 135, 12, 12);
 }
 
 void safeFar(){
